@@ -12,9 +12,9 @@ The planned requirements for Fuel are as follows:
 
 ##Download version 1.0.0 now.
 
-The DB class use the configuration from /app/config/db.php to make it easier to use. All you need to do is download ADOdb5 library and place it in /fuel/vendor/adodb5
+The DB class use the configuration from ``/app/config/db.php`` to make it easier to use. All you need to do is download ADOdb5 library and place it in ``/fuel/core/vendor/adodb5``
 
-From there you can just start using ADOdb by enabling adodb package from /app/config/config.php
+From there you can just start using ADOdb by enabling adodb package from ``/app/config/config.php``
 Accessing ADOdb Library
 
 	$db = \Adodb\DB::factory();

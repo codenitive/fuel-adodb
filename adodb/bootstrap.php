@@ -1,6 +1,6 @@
 <?php
 
-Fuel\Core\Autoloader::add_classes(array(
+Autoloader::add_classes(array(
 	'Adodb\\DB'				=> __DIR__.'/classes/db.php',
 	'Adodb\\ActiveRecord'	=> __DIR__.'/classes/activerecord.php',
 ));

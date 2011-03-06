@@ -24,7 +24,18 @@ use \ADODB_Active_Record;
 
 class DB {
 	private static $instances = array ();
+	private static $active = '';
 
+	public function __construct($name = null) {
+		return static::factory();
+	}
+	
+	public static function _init() {
+		\Config::load('db', true);
+		
+		static::$active = \Config::get('db.active');
+	}
+	
 	/**
 	 * Accessing ADOdb Library:
 	 * $db = \Adodb\DB::factory();
@@ -38,12 +49,8 @@ class DB {
 	 * @return object ADOdb
 	 */
 	public static function factory($name = null) {
-		\Config::load('db', true);
-
-		$active = \Config::get('db.active');
-
 		if (empty($name)) {
-			$name = $active;
+			$name = static::$active;
 		}
 
 		if (!isset(static::$instances[$name])) {

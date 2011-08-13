@@ -1,8 +1,8 @@
 <?php
 
 Autoloader::add_classes(array(
-	'Adodb\\DB'				=> __DIR__.'/classes/db.php',
-	'Adodb\\ActiveRecord'	=> __DIR__.'/classes/activerecord.php',
+    'Adodb\\DB'             => __DIR__.'/classes/db.php',
+    'Adodb\\ActiveRecord'   => __DIR__.'/classes/activerecord.php',
 ));
 
 

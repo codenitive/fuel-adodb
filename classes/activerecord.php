@@ -9,19 +9,22 @@ use \ADODB_Active_Record;
 
 class ActiveRecord extends \ADODB_Active_Record { 
 
-	/**
-	 * Allow ActiveRecord to use multiple database connection
-	 *
-	 * @see ADOdb Manual (http://phplens.com/lens/adodb/docs-active-record.htm) Dealing with Multiple Databases
-	 * @access public
-	 */
-	function __construct() {
-		$name = '';
-		if (!empty($this->_dbat)) {
-			$name = $this->_dbat;
-		}
+    /**
+     * Allow ActiveRecord to use multiple database connection
+     *
+     * @see ADOdb Manual (http://phplens.com/lens/adodb/docs-active-record.htm) Dealing with Multiple Databases
+     * @access public
+     */
+    function __construct() 
+    {
+        $name = '';
+        
+        if (!empty($this->_dbat)) 
+        {
+            $name = $this->_dbat;
+        }
 
-		\Adodb\DB::factory($name);
-		parent::__construct();
-	}
+        \Adodb\DB::factory($name);
+        parent::__construct();
+    }
 }

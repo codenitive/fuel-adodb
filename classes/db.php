@@ -23,57 +23,63 @@ use \ADODB_Active_Record;
  */
 
 class DB {
-	private static $instances = array ();
-	private static $active = '';
+    protected static $instances = array ();
+    protected static $active = '';
 
-	public function __construct($name = null) {
-		return static::factory();
-	}
-	
-	public static function _init() {
-		\Config::load('db', true);
-		
-		static::$active = \Config::get('db.active');
-	}
-	
-	/**
-	 * Accessing ADOdb Library:
-	 * $db = \Adodb\DB::factory();
-	 *
-	 * You can also make multiple connection by adding the connection name as a parameter
-	 * $name = 'qa';
-	 * $db = \Adodb\DB::factory($name);
-	 *
-	 * @access public
-	 * @param string $name
-	 * @return object ADOdb
-	 */
-	public static function factory($name = null) {
-		if (empty($name)) {
-			$name = static::$active;
-		}
+    public function __construct($name = null) 
+    {
+        return static::factory($name);
+    }
+    
+    public static function _init() 
+    {
+        \Config::load('db', true);
+        
+        static::$active = \Config::get('db.active');
+    }
+    
+    /**
+     * Accessing ADOdb Library:
+     * $db = \Adodb\DB::factory();
+     *
+     * You can also make multiple connection by adding the connection name as a parameter
+     * $name = 'qa';
+     * $db = \Adodb\DB::factory($name);
+     *
+     * @access public
+     * @param string $name
+     * @return object ADOdb
+     */
+    public static function factory($name = null) 
+    {
+        if (\empty($name)) 
+        {
+            $name = static::$active;
+        }
 
-		if (!isset(static::$instances[$name])) {
+        if (!\isset(static::$instances[$name])) 
+        {
+            $config = \Config::get("db.{$name}");
 
-			$config = \Config::get("db.{$name}");
+            if (\is_null($config)) 
+            {
+                throw new \Fuel_Exception("Unable to get configuration for {$name}");
+            }
 
-			if (is_null($config)) {
-				throw new \Exception("Unable to get configuration for {$name}");
-			}
+            $dsn = $config['type'] . '://' . $config['connection']['username']
+                       . ':' . $config['connection']['password'] . '@' . $config['connection']['hostname']
+                       . '/' . $config['connection']['database'];
 
-			$dsn = $config['type'] . '://' . $config['connection']['username']
-					   . ':' . $config['connection']['password'] . '@' . $config['connection']['hostname']
-					   . '/' . $config['connection']['database'];
+            try 
+            {
+                static::$instances[$name] =& ADONewConnection($dsn);
+                \ADODB_Active_Record::SetDatabaseAdapter(static::$instances[$name], $name);
+            }
+            catch(\Fuel_Exception $e) {
+                throw new \Fuel_Exception($e);
+            }
+        }
 
-			try {
-				static::$instances[$name] =& ADONewConnection($dsn);
-				\ADODB_Active_Record::SetDatabaseAdapter(static::$instances[$name], $name);
-			}
-			catch(\Exception $e) {
-				throw new \Exception($e);
-			}
-		}
-
-		return static::$instances[$name];
-	}
+        return static::$instances[$name];
+    }
 }

@@ -52,12 +52,12 @@ class DB {
      */
     public static function factory($name = null) 
     {
-        if (\empty($name)) 
+        if (empty($name)) 
         {
             $name = static::$active;
         }
 
-        if (!\isset(static::$instances[$name])) 
+        if (!isset(static::$instances[$name])) 
         {
             $config = \Config::get("db.{$name}");
 

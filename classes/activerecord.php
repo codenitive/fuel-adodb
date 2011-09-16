@@ -15,7 +15,7 @@ class ActiveRecord extends \ADODB_Active_Record {
      * @see ADOdb Manual (http://phplens.com/lens/adodb/docs-active-record.htm) Dealing with Multiple Databases
      * @access public
      */
-    function __construct() 
+    public function __construct() 
     {
         $name = '';
         

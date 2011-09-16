@@ -30,11 +30,6 @@ class DB {
     protected static $instances = array ();
 
     /**
-     * @staticvar   Active DB connection
-     */
-    protected static $active = '';
-
-    /**
      * Alias to self::forge using construct
      * $db = new \Adodb\DB;
      * or
@@ -113,7 +108,7 @@ class DB {
      * @static
      * @access  public
      * @param   string  $name
-     * @return  object  ADOdb
+     * @return  object  Adodb\DB
      * @see     self::forge()
      */
     public static function factory($name = null)

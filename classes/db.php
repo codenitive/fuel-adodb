@@ -23,14 +23,38 @@ use \ADODB_Active_Record;
  */
 
 class DB {
+
+    /**
+     * @staticvar   Cache all instances
+     */
     protected static $instances = array ();
+
+    /**
+     * @staticvar   Active DB connection
+     */
     protected static $active = '';
 
+    /**
+     * Alias to self::forge using construct
+     * $db = new \Adodb\DB;
+     * or
+     * $db = new \Adodb\DB($name);
+     *
+     * @access  public
+     * @param   string  $name
+     * @return  Adodb
+     */
     public function __construct($name = null) 
     {
         return static::forge($name);
     }
     
+    /**
+     * Initiated once from \Fuel\Core\Autoloader
+     *
+     * @static
+     * @access  public
+     */
     public static function _init() 
     {
         \Config::load('db', true);
@@ -64,7 +88,7 @@ class DB {
 
             if (\is_null($config)) 
             {
-                throw new \Fuel_Exception("Unable to get configuration for {$name}");
+                throw new \Fuel_Exception("\Adodb\DB: Unable to get configuration for {$name}");
             }
 
             $dsn = $config['type'] . '://' . $config['connection']['username']
@@ -76,8 +100,9 @@ class DB {
                 static::$instances[$name] =& ADONewConnection($dsn);
                 \ADODB_Active_Record::SetDatabaseAdapter(static::$instances[$name], $name);
             }
-            catch(\Fuel_Exception $e) {
-                throw new \Fuel_Exception($e);
+            catch(\Fuel_Exception $e) 
+            {
+                throw new \Fuel_Exception($e->getMessage());
             }
         }
 

@@ -58,8 +58,6 @@ class DB {
     public static function _init() 
     {
         \Config::load('db', true);
-        
-        static::$active = \Config::get('db.active');
     }
     
     /**
@@ -79,7 +77,7 @@ class DB {
     {
         if (empty($name)) 
         {
-            $name = static::$active;
+            $name = \Config::get('db.active');
         }
 
         if (!isset(static::$instances[$name])) 

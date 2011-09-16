@@ -28,7 +28,7 @@ class DB {
 
     public function __construct($name = null) 
     {
-        return static::factory($name);
+        return static::forge($name);
     }
     
     public static function _init() 
@@ -40,17 +40,18 @@ class DB {
     
     /**
      * Accessing ADOdb Library:
-     * $db = \Adodb\DB::factory();
+     * $db = \Adodb\DB::forge();
      *
      * You can also make multiple connection by adding the connection name as a parameter
      * $name = 'qa';
-     * $db = \Adodb\DB::factory($name);
+     * $db = \Adodb\DB::forge($name);
      *
-     * @access public
-     * @param string $name
-     * @return object ADOdb
+     * @static
+     * @access  public
+     * @param   string  $name
+     * @return  object  ADOdb
      */
-    public static function factory($name = null) 
+    public static function forge($name = null) 
     {
         if (empty($name)) 
         {
@@ -82,4 +83,19 @@ class DB {
 
         return static::$instances[$name];
     }
+
+    /**
+     * Alias to self::forge()
+     *
+     * @static
+     * @access  public
+     * @param   string  $name
+     * @return  object  ADOdb
+     * @see     self::forge()
+     */
+    public static function factory($name = null)
+    {
+        return static::forge($name);
+    }
+
 }

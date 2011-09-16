@@ -24,7 +24,7 @@ class ActiveRecord extends \ADODB_Active_Record {
             $name = $this->_dbat;
         }
 
-        \Adodb\DB::factory($name);
+        \Adodb\DB::forge($name);
         parent::__construct();
     }
 }

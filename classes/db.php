@@ -23,63 +23,115 @@ use \ADODB_Active_Record;
  */
 
 class DB {
-    protected static $instances = array ();
-    protected static $active = '';
 
-    public function __construct($name = null) 
-    {
-        return static::factory($name);
-    }
-    
-    public static function _init() 
-    {
-        \Config::load('db', true);
-        
-        static::$active = \Config::get('db.active');
-    }
-    
-    /**
-     * Accessing ADOdb Library:
-     * $db = \Adodb\DB::factory();
-     *
-     * You can also make multiple connection by adding the connection name as a parameter
-     * $name = 'qa';
-     * $db = \Adodb\DB::factory($name);
-     *
-     * @access public
-     * @param string $name
-     * @return object ADOdb
-     */
-    public static function factory($name = null) 
-    {
-        if (empty($name)) 
-        {
-            $name = static::$active;
-        }
+	/**
+	 * @staticvar   Cache all instances
+	 */
+	protected static $instances = array ();
 
-        if (!isset(static::$instances[$name])) 
-        {
-            $config = \Config::get("db.{$name}");
+	/**
+	 * Alias to self::forge using construct
+	 * $db = new \Adodb\DB;
+	 * or
+	 * $db = new \Adodb\DB($name);
+	 *
+	 * @access  public
+	 * @param   string  $name
+	 * @return  Adodb
+	 */
+	public function __construct($name = null) 
+	{
+		return static::forge($name);
+	}
+	
+	/**
+	 * Initiated once from \Fuel\Core\Autoloader
+	 *
+	 * @static
+	 * @access  public
+	 */
+	public static function _init() 
+	{
+		\Config::load('db', true);
+	}
+	
+	/**
+	 * Accessing ADOdb Library:
+	 * $db = \Adodb\DB::forge();
+	 *
+	 * You can also make multiple connection by adding the connection name as a parameter
+	 * $name = 'qa';
+	 * $db = \Adodb\DB::forge($name);
+	 *
+	 * @static
+	 * @access  public
+	 * @param   string  $name
+	 * @return  object  ADOdb
+	 */
+	public static function forge($name = null) 
+	{
+		if (empty($name)) 
+		{
+			$name = \Config::get('db.active');
+		}
 
-            if (\is_null($config)) 
-            {
-                throw new \Fuel_Exception("Unable to get configuration for {$name}");
-            }
+		if ( ! isset(static::$instances[$name])) 
+		{
+			$config = \Config::get("db.{$name}");
 
-            $dsn = $config['type'] . '://' . $config['connection']['username']
-                       . ':' . $config['connection']['password'] . '@' . $config['connection']['hostname']
-                       . '/' . $config['connection']['database'];
+			if (null === $config) 
+			{
+				throw new \FuelException(__METHOD__": Unable to get configuration for {$name}");
+			}
 
-            try 
-            {
-                static::$instances[$name] =& ADONewConnection($dsn);
-                \ADODB_Active_Record::SetDatabaseAdapter(static::$instances[$name], $name);
-            }
-            catch(\Fuel_Exception $e) {
-                throw new \Fuel_Exception($e);
-            }
-        }
+			$dsn = $config['type'] . '://' . $config['connection']['username']
+					   . ':' . $config['connection']['password'] . '@' . $config['connection']['hostname']
+					   . '/' . $config['connection']['database'];
 
-        return static::$instances[$name];
-    }
+			try 
+			{
+				static::$instances[$name] =& ADONewConnection($dsn);
+				\ADODB_Active_Record::SetDatabaseAdapter(static::$instances[$name], $name);
+			}
+			catch(\FuelException $e) 
+			{
+				throw new \FuelException($e->getMessage());
+			}
+		}
+
+		return static::$instances[$name];
+	}
+
+	/**
+	 * Accessing ADOdb Library:
+	 * $db = \Adodb\DB::make();
+	 *
+	 * You can also make multiple connection by adding the connection name as a parameter
+	 * $name = 'qa';
+	 * $db = \Adodb\DB::make($name);
+	 *
+	 * @static
+	 * @access  public
+	 * @param   string  $name
+	 * @return  object  ADOdb
+	 */
+	public static function make($name = null) 
+	{
+		return static::forge($name);
+	}
+
+	/**
+	 * Alias to self::forge()
+	 *
+	 * @static
+	 * @access  public
+	 * @param   string  $name
+	 * @return  object  Adodb\DB
+	 * @see     self::forge()
+	 */
+	public static function factory($name = null)
+	{
+		return static::forge($name);
+	}
+
 }
